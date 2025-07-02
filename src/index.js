@@ -1,7 +1,18 @@
 import express from 'express';
+import pino from 'pino-http';
+import cors from 'cors';
+
 
 const app = express();
 const PORT = 3000;
+app.use(
+  pino({
+    transport: {
+      target: 'pino-pretty',
+    },
+  }),
+);
+app.use(cors());
 app.use((req, res, next) => {
     console.log(`Time: ${new Date().toLocaleString()}`);
     next();
@@ -33,7 +44,6 @@ app.use((err, req, res, next) => {
       error: err.message,
     });
   });
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
