@@ -27,7 +27,7 @@ export const createStudentController = async (req, res) => {
     const student = await createStudent(req.body);
     res.status(201).json({
         status: 201,
-        message: `Successfully created a student!`,
+        message: "Successfully created a student!",
         data: student,
       });
 };
@@ -53,6 +53,20 @@ export const upsertStudentController = async (req, res, next) => {
     res.status(status).json({
         status,
         message: "Successfully upserted a student!",
+        data: result.student,
+    });
+};
+
+export const patchStudentController = async (req, res, next) => {
+    const { studentId } = req.params;
+    const result = await updateStudent(studentId, req.body);
+    if (!result) {
+        next(createHttpError(404, "Student is not found"));
+        return;
+    }
+    res.json({
+        status: 200,
+        message: `Successfully patched a student with id ${studentId}!`,
         data: result.student,
     });
 };
