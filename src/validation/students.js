@@ -20,7 +20,6 @@ export const updateStudentSchema = Joi.object({
         'string.min': 'Username should have at least {#limit} characters',
         'string.max': 'Username should have at most {#limit} characters',
     }),
-    email: Joi.string().email(),
     age: Joi.number().integer().min(6).max(16),
     gender: Joi.string().valid("male", "female", "other"),
     avgMark: Joi.number().min(2).max(12),
