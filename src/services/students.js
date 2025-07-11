@@ -5,22 +5,51 @@ import { SORT_ORDER } from '../constants/index.js';
 // Mongoose sorting syntax:
 // Model.find().sort({ field1: direction1, field2: direction2, ... });
 
-export const getAllStudents = async ({ page = 1, perPage = 10, sortBy = "_id", sortOrder = SORT_ORDER.ASC, }) => {
+export const getAllStudents = async ({ page = 1, perPage = 10, sortBy = "_id", sortOrder = SORT_ORDER.ASC, filter = {}}) => {
   // console.log(`At getAllStudents page: ${page}, perPage: ${perPage}`);
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
   const studentsQuery = StudentsCollection.find();
+  if (filter.gender) {
+    studentsQuery.where("gender").equals(filter.gender);
+  }
+  if (filter.maxAge) {
+    studentsQuery.where("age").lte(filter.maxAge);
+  }
+  if (filter.minAge) {
+    studentsQuery.where("age").gte(filter.minAge);
+  }
+  if (filter.maxAvgMark) {
+    studentsQuery.where("avgMark").lte(filter.maxAvgMark);
+  }
+  if (filter.minAvgMark) {
+    studentsQuery.where("avgMark").gte(filter.minAvgMark);
+  }
   // deeper understanding about Query Object (studentsQuery) is in the chat with AI
-  const studentsCount = await StudentsCollection.find()
-    .merge(studentsQuery)
-    .countDocuments();
-  const students = await studentsQuery
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
+
+  const [studentsCount, students] = await Promise.all([
+    StudentsCollection.find()
+      .merge(studentsQuery)
+      .countDocuments(),
+    studentsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
+
   const paginationData = calculatePaginationData(studentsCount, page, perPage);
+
+  // const studentsCount = await StudentsCollection.find()
+  //   .merge(studentsQuery)
+  //   .countDocuments();
+  // const students = await studentsQuery
+  //   .skip(skip)
+  //   .limit(limit)
+  //   .sort({ [sortBy]: sortOrder })
+  //   .exec();
+  // const paginationData = calculatePaginationData(studentsCount, page, perPage);
 
   return {
     data: students,
