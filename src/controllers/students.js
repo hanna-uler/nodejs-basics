@@ -7,7 +7,6 @@ import createHttpError from "http-errors";
 
 export const getStudentsController = async (req, res) => {
     const { page, perPage } = parsePaginationParams(req.query);
-    // console.log(`At getStudentsController page: ${page}, perPage: ${perPage}`);
     const { sortBy, sortOrder } = parseSortParams(req.query);
     const filter = parseFilterParams(req.query);
     const students = await getAllStudents({
