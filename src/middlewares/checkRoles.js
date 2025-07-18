@@ -9,19 +9,22 @@ export const checkRoles = (...roles) => async (req, res, next) => {
         return;
     }
     const { role } = user;
+
     if (roles.includes(ROLES.TEACHER) && role === ROLES.TEACHER) {
         next();
         return;
     }
 
     if (roles.includes(ROLES.PARENT) && role === ROLES.PARENT) {
-        const { studentID } = req.params;
-        if (!studentID) {
-            next(createHttpError(403));
+        const { studentId } = req.params;
+
+        if (!studentId) {
+            next(createHttpError(403, "You don't have permission to get this data."));
             return;
         }
+
         const student = await StudentsCollection.findOne({
-            _id: studentID,
+            _id: studentId,
             parentId: user._id,
         });
 
@@ -30,5 +33,5 @@ export const checkRoles = (...roles) => async (req, res, next) => {
             return;
         }
     }
-    next(createHttpError(403));
+    next(createHttpError(403, "You don't have permission to get this data."));
 };
