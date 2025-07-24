@@ -81,7 +81,11 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 };
 
 export const requestResetToken = async (email) => {
+    // console.log(`at requestResetToken => email: ${email}`);
+
     const user = await UsersCollection.findOne({ email });
+    // console.log(`at requestResetToken => user: ${user}`);
+
     if (!user) {
         throw createHttpError(404, "User is not found.");
     }
@@ -95,6 +99,7 @@ export const requestResetToken = async (email) => {
             expiresIn: "15m",
         }
     );
+    // console.log(`at requestResetToken => resetToken: ${resetToken}`);
 
     await sendEmail({
         from: getEnvVar(SMTP.SMTP_FROM),
