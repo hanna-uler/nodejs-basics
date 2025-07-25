@@ -9,14 +9,21 @@ export const checkRoles = (...roles) => async (req, res, next) => {
         return;
     }
     const { role } = user;
+    // console.log(`At checkRoles => role: ${role}`);
 
     if (roles.includes(ROLES.TEACHER) && role === ROLES.TEACHER) {
         next();
         return;
     }
+    // console.log(`At checkRoles => roles.includes(ROLES.PARENT): ${roles.includes(ROLES.PARENT)}`);
+    // console.log(`At checkRoles => role === ROLES.PARENT: ${role === ROLES.PARENT}`);
+    // console.log(`At checkRoles => roles: ${roles}`);
+    // console.log(`At checkRoles => ROLES: ${ROLES}`);
 
     if (roles.includes(ROLES.PARENT) && role === ROLES.PARENT) {
         const { studentId } = req.params;
+        // console.log(`At checkRoles => studentId: ${studentId}`);
+
 
         if (!studentId) {
             next(createHttpError(403, "You don't have permission to get this data."));
