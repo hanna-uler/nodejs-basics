@@ -3,6 +3,8 @@ import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
 import { parseFilterParams } from "../utils/parseFilterParams.js";
 import { saveFileToUploadDir } from "../utils/saveFileToUploadDir.js";
+import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
+import { getEnvVar } from "../utils/getEnvVar.js";
 import createHttpError from "http-errors";
 
 
@@ -78,6 +80,9 @@ export const patchStudentController = async (req, res, next) => {
     let photoUrl;
 
     if (photo) {
+        if (getEnvVar("ENABLE_CLOUDINARY") === true) {
+            photoUrl = await saveFileToCloudinary(photo);
+        }
         photoUrl = await saveFileToUploadDir(photo);
     }
     const result = await updateStudent(studentId, {...req.body, photo: photoUrl});
@@ -88,7 +93,7 @@ export const patchStudentController = async (req, res, next) => {
     }
     res.json({
         status: 200,
-        message: `Successfully patched a student with id ${studentId}!`,
+        message: `Successfully patched a student.`,
         data: result.student,
     });
 };
