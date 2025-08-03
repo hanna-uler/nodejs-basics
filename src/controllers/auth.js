@@ -87,7 +87,10 @@ export const resetPasswordController = async (req, res) => {
 };
 
 export const getGoogleOAuthUrlController = async (req, res) => {
+  // console.log("at getGoogleOAuthUrlController => Executing Controller Func");
   const url = generateAuthUrl();
+  // console.log("at getGoogleOAuthUrlController => url: ", url);
+
   res.json({
     status: 200,
     message: "Successfully get Google OAuth url!",

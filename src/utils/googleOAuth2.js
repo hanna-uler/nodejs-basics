@@ -21,12 +21,14 @@ export const generateAuthUrl = () => googleOAuthClient.generateAuthUrl({
 
 export const validateCode = async (code) => {
     const response = await googleOAuthClient.getToken(code);
+    // console.log("at validateCode => response: ", response);
+
     if (!response.tokens.id_token) throw createHttpError(401, "Unauthorized");
 
     const ticket = await googleOAuthClient.verifyIdToken({
         idToken: response.tokens.id_token,
     });
-    console.log("at validateCode => ticket: ", ticket);
+    // console.log("at validateCode => ticket: ", ticket);
     return ticket;
 };
 
